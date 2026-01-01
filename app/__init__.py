@@ -8,7 +8,8 @@ def create_app(test_config=None):
         SECRET_KEY = 'dev',
         DATABASE = os.path.join(app.instance_path, 'flaskr.sqlite'),
     )
-
+    from app.routes import blue_print
+    app.register_blueprint(blue_print)
     if test_config is None:
         #load the instance config, if it exists, when not testingg
         app.config.from_pyfile('config.py', silent=True)
@@ -16,17 +17,10 @@ def create_app(test_config=None):
         # Load the test config if passed in
         app.config.from_mapping(test_config)
 
-
     # Ensure the instance folder exists
     try:
         os.makedirs(app.instance_path)
     except OSError:
         pass
 
-    # A simple Hello World Page
-    @app.route('/')
-    @app.route('/hello')
-    def hello():
-        return 'Hello, World!'
-    
     return app
