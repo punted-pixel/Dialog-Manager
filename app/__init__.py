@@ -1,13 +1,16 @@
 import os
 from flask import Flask
+from flask_bootstrap import Bootstrap
 
 def create_app(test_config=None):
     #create and configure the app
+    print('RUNNING CREATE APP')
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
         SECRET_KEY = 'dev',
         DATABASE = os.path.join(app.instance_path, 'flaskr.sqlite'),
     )
+    Bootstrap(app)
     from app.routes import blue_print
     app.register_blueprint(blue_print)
     if test_config is None:
