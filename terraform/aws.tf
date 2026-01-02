@@ -9,6 +9,7 @@ terraform {
 
 provider "aws" {
   region = "us-east-1"  # Change to your preferred region
+  profile = "terraform"
 }
 
 # IAM role for App Runner service
@@ -63,7 +64,7 @@ resource "aws_apprunner_service" "flask_app" {
     }
 
     code_repository {
-      repository_url = "https://github.com/your-username/your-repo"  # Update this
+      repository_url = "https://github.com/punted-pixel/Dialog-Manager"  # Update this
 
       source_code_version {
         type  = "BRANCH"
@@ -71,18 +72,7 @@ resource "aws_apprunner_service" "flask_app" {
       }
 
       code_configuration {
-        configuration_source = "API"
-        
-        code_configuration_values {
-          runtime              = "PYTHON_3"
-          build_command        = "pip install -r requirements.txt"
-          start_command        = "python app.py"
-          port                 = "8080"
-          runtime_environment_variables = {
-            # Add your environment variables here
-            # FLASK_ENV = "production"
-          }
-        }
+        configuration_source = "REPOSITORY"
       }
     }
 
