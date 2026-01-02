@@ -6,17 +6,16 @@ terraform {
     }
   }
 }
-
-# Configure the DigitalOcean Provider
 provider "digitalocean" {
   token = var.do_token
 }
 
 # Variables
 variable "do_token" {
-  description = "DigitalOcean API Token"
+  description = "DigitalOcean API Token (optional if using DIGITALOCEAN_TOKEN env var)"
   type        = string
   sensitive   = true
+  default     = "andrew"
 }
 
 variable "github_repo" {
