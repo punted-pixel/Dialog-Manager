@@ -32,6 +32,7 @@ variable "region" {
 
 variable "registry_name" {
   default = "recs-registry"
+  type = string
 }
 
 variable "image_name" {
@@ -44,10 +45,10 @@ variable "image_tag" {
   default = "latest"
 }
 
-resource "digitalocean_container_registry" "registry"{
-  name = var.registry_name
-  subscription_tier_slug = "basic"
-}
+# resource "digitalocean_container_registry" "registry"{
+#   name = var.registry_name
+#   subscription_tier_slug = "basic"
+# }
 
 # App Platform - references .do/app.yaml in your repo
 resource "digitalocean_app" "flask_app" {
@@ -74,7 +75,7 @@ resource "digitalocean_app" "flask_app" {
 }
 
 resource "digitalocean_container_registry_docker_credentials" "app_registry_creds" {
-  registry_name = digitalocean_container_registry.registry.name
+  registry_name = var.registry_name 
 
 }
 
