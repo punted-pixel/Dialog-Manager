@@ -18,18 +18,6 @@ variable "do_token" {
   default     = "andrew"
 }
 
-variable "github_repo" {
-  description = "GitHub repository (format: owner/repo)"
-  type        = string
-  default     = "punted-pixel/Dialog-Manager"
-}
-
-variable "github_branch" {
-  description = "GitHub branch to deploy"
-  type        = string
-  default     = "main"
-}
-
 variable "app_name" {
   description = "Name of the application"
   type        = string
@@ -49,6 +37,18 @@ resource "digitalocean_app" "flask_app" {
     name   = var.app_name
     region = var.region
 
+    service {
+      name = "dialog-manager-service"
+      instance_count = 1
+      instance_size_slug = "apps-s-1vcpu-1gb"
+      git {
+        repo_clone_url  = "https://github.com/punted-pixel/Dialog-Manager.git"
+        branch  = "main"
+      }
+      run_command = "gunicorn app:app --bind 0.0.0.0:$PORT --workers 3"
+
+    }
+
     # Use the app.yaml from your repository
     # DigitalOcean will look for .do/app.yaml or app.yaml in repo root
     
@@ -64,6 +64,7 @@ resource "digitalocean_app" "flask_app" {
 # Outputs
 output "app_live_url" {
   description = "Live URL of the deployed app"
+
   value       = "https://${digitalocean_app.flask_app.default_ingress}"
 }
 
