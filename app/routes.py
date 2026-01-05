@@ -7,3 +7,7 @@ blue_print = Blueprint('main', __name__)
 def index():
     user = {'username': 'sidious'} 
     return render_template('index.html', title='Home', user=user)
+
+@blue_print.route('/health')
+def health():
+    return 'ok', 200
