@@ -60,6 +60,16 @@ resource "digitalocean_app" "flask_app" {
       name = "dialog-manager-service"
       instance_count = 1
       instance_size_slug = "apps-s-1vcpu-1gb"
+      http_port = 8080
+
+      health_check {
+        http_path = "/health"
+        initial_delay_seconds = 10
+        period_seconds = 10
+        timeout_seconds = 2
+        success_threshold = 1
+        failure_threshold = 3
+      }
       image {
         registry_type = "DOCR"
         registry = var.registry_name
