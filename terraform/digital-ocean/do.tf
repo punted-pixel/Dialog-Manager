@@ -31,18 +31,15 @@ variable "region" {
 }
 
 variable "registry_name" {
-  description "Name of the apps DigitalOcean Registry."
   default = "recs-registry"
 }
 
 variable "image_name" {
-  description "Name of the container image in DOCR"
   type = string
   default = "dialog-system-repo"
 }
 
 variable "image_tag" {
-  description "Tag of the container image"
   type = string
   default = "latest"
 }
@@ -78,7 +75,7 @@ resource "digitalocean_app" "flask_app" {
 
 resource "digitalocean_container_registry_docker_credentials" "app_registry_creds" {
   registry_name = digitalocean_container_registry.registry.name
-  
+
 }
 
 # Outputs
