@@ -30,6 +30,27 @@ variable "region" {
   default     = "nyc"
 }
 
+variable "registry_name" {
+  description "Name of the apps DigitalOcean Registry."
+  default = "recs-registry"
+}
+
+variable "image_name" {
+  description "Name of the container image in DOCR"
+  type = string
+  default = "dialog-system-repo"
+}
+
+variable "image_tag" {
+  description "Tag of the container image"
+  type = string
+  default = "latest"
+}
+
+resource "digitalocean_container_registry" "registry"{
+  name = var.registry_name
+  subscription_tier_slug = "basic"
+}
 
 # App Platform - references .do/app.yaml in your repo
 resource "digitalocean_app" "flask_app" {
@@ -41,24 +62,23 @@ resource "digitalocean_app" "flask_app" {
       name = "dialog-manager-service"
       instance_count = 1
       instance_size_slug = "apps-s-1vcpu-1gb"
-      git {
-        repo_clone_url  = "https://github.com/punted-pixel/Dialog-Manager.git"
-        branch  = "main"
+      image {
+        registry_type = "DOCR"
+        registry = var.registry_name
+        repository = var.image_name
+        tag = var.image_tag
+        deploy_on_push {
+          enabled = true
+        }
       }
-      run_command = "gunicorn app:app --bind 0.0.0.0:$PORT --workers 3"
-
     }
-
-    # Use the app.yaml from your repository
-    # DigitalOcean will look for .do/app.yaml or app.yaml in repo root
-    
-    # You only need to specify the GitHub source here
-    # All other config comes from app.yaml in your repo
   }
   
-  # Alternative: if you want to provide the spec directly from a file
-  # Uncomment this and comment out the spec block above:
-  # spec = file("${path.module}/app.yaml")
+}
+
+resource "digitalocean_container_registry_docker_credentials" "app_registry_creds" {
+  registry_name = digitalocean_container_registry.registry.name
+  
 }
 
 # Outputs
