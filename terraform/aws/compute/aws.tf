@@ -12,6 +12,8 @@ provider "aws" {
   profile = "terraform"
 }
 
+data "aws_caller_identity" "current" {}
+
 
 resource "aws_iam_role" "apprunner_ecr_access" {
   name = "apprunner-ecr-access-role"
